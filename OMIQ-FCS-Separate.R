@@ -39,7 +39,7 @@ stopifnot(clusters_annotation == clusters_full_fcs)
 
 # Subset and save FCS per list
 fcs_list <- list()
-setwd("./Subset_FCS/")
+if (!dir.exists("Subset_FCS")) {dir.create("Subset_FCS")}; setwd("Subset_FCS")
 column_subset <- (!colnames(fcs_full) %in% COLUMN_TO_SPLIT)
 for (cluster in clusters_annotation) {
   samplename <- fcs_annotation[cluster,1]
