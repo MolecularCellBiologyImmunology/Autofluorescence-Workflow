@@ -1,7 +1,7 @@
 # Script to define unique spectra from SpectroFlo similarity matrices
 # Author: Michael de Kok
 # Date: 09-08-2022
-# Last Updated: 22-12-2023
+# Last Updated: 18-11-2024
 
 # Load SpectroFlo halfmatrix; assume up to 100 columns then remove empty ones
 halfmatrix <- read.csv(choose.files(), header = F, 
@@ -23,6 +23,11 @@ makeSymm <- function(m) {
 }
 fullmatrix <- as.data.frame(makeSymm(halfmatrix))
 
+# Ensure that the data frame only contains numeric columns 
+fullmatrix <- data.frame(apply(fullmatrix, 2, function(x) as.numeric(as.character(x))))
+stopifnot(all(sapply(fullmatrix, is.numeric)))
+rownames(fullmatrix) <- colnames(fullmatrix)
+
 # We consider two spectra as similar if the similarity score is >0.98 
 similarity_logical <- fullmatrix > 0.98
 
@@ -30,7 +35,7 @@ similarity_logical <- fullmatrix > 0.98
 similarity_number_identical <- colSums(similarity_logical) - 1
 
 # We also calculate the sum of all similarity scores per spectra (minus itself)
-similarity_total_sum <- colSums(as.data.frame(sapply(fullmatrix, as.numeric)))-1
+similarity_total_sum <- colSums(fullmatrix)-1
 
 # Create a data frame summarizing this information; Set all to unique for now
 summary <- data.frame("Spectrum_Name" = colnames(fullmatrix),
