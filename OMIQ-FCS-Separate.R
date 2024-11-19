@@ -1,6 +1,7 @@
 # Script to Separate Merged FCS file from OMIQ by Column
 # Author: Michael de Kok
 # Date: 17-07-2022
+# Last Updated: 19-11-2024
 
 ##### USER PARAMETERS #####
 
@@ -40,10 +41,10 @@ stopifnot(clusters_annotation == clusters_full_fcs)
 # Subset and save FCS per list
 fcs_list <- list()
 if (!dir.exists("Subset_FCS")) {dir.create("Subset_FCS")}; setwd("Subset_FCS")
-column_subset <- (!colnames(fcs_full) %in% COLUMN_TO_SPLIT)
+column_subset <- (!colnames(fcs_full) %in% SPLIT_COLUMN)
 for (cluster in clusters_annotation) {
   samplename <- fcs_annotation[cluster,1]
-  fcs_subset <- fcs_exprs[,COLUMN_TO_SPLIT] == cluster
+  fcs_subset <- fcs_exprs[,SPLIT_COLUMN] == cluster
   fcs_subset <- fcs_full[fcs_subset,column_subset]
   fcs_list[[samplename]] <- fcs_subset
   write.FCS(x = fcs_subset, filename = paste(samplename, ".fcs", sep = ""))
